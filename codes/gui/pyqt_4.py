@@ -1,0 +1,80 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit
+from PyQt5.QtCore import Qt
+
+def evaluate_expression():
+    expression = text_box.text()
+    result = str(eval(expression))
+    text_box.setText(result)
+
+def add_to_expression(character):
+    expression = text_box.text()
+    text_box.setText(expression + character)
+
+app = QApplication(sys.argv)
+window = QWidget()
+
+text_box = QLineEdit()
+text_box.setAlignment(Qt.AlignRight)
+text_box.setReadOnly(True)
+
+button_0 = QPushButton('0')
+button_1 = QPushButton('1')
+button_2 = QPushButton('2')
+button_3 = QPushButton('3')
+button_4 = QPushButton('4')
+button_5 = QPushButton('5')
+button_6 = QPushButton('6')
+button_7 = QPushButton('7')
+button_8 = QPushButton('8')
+button_9 = QPushButton('9')
+button_add = QPushButton('+')
+button_subtract = QPushButton('-')
+button_multiply = QPushButton('*')
+button_divide = QPushButton('/')
+button_decimal = QPushButton('.')
+button_equals = QPushButton('=')
+
+button_0.clicked.connect(lambda: add_to_expression('0'))
+button_1.clicked.connect(lambda: add_to_expression('1'))
+button_2.clicked.connect(lambda: add_to_expression('2'))
+button_3.clicked.connect(lambda: add_to_expression('3'))
+button_4.clicked.connect(lambda: add_to_expression('4'))
+button_5.clicked.connect(lambda: add_to_expression('5'))
+button_6.clicked.connect(lambda: add_to_expression('6'))
+button_7.clicked.connect(lambda: add_to_expression('7'))
+button_8.clicked.connect(lambda: add_to_expression('8'))
+button_9.clicked.connect(lambda: add_to_expression('9'))
+button_add.clicked.connect(lambda: add_to_expression('+'))
+button_subtract.clicked.connect(lambda: add_to_expression('-'))
+button_multiply.clicked.connect(lambda: add_to_expression('*'))
+button_divide.clicked.connect(lambda: add_to_expression('/'))
+button_decimal.clicked.connect(lambda: add_to_expression('.'))
+button_equals.clicked.connect(evaluate_expression)
+
+button_layout = QVBoxLayout()
+button_layout.addWidget(button_7)
+button_layout.addWidget(button_8)
+button_layout.addWidget(button_9)
+button_layout.addWidget(button_add)
+button_layout.addWidget(button_4)
+button_layout.addWidget(button_5)
+button_layout.addWidget(button_6)
+button_layout.addWidget(button_subtract)
+button_layout.addWidget(button_1)
+button_layout.addWidget(button_2)
+button_layout.addWidget(button_3)
+button_layout.addWidget(button_multiply)
+button_layout.addWidget(button_decimal)
+button_layout.addWidget(button_0)
+button_layout.addWidget(button_equals)
+button_layout.addWidget(button_divide)
+
+main_layout = QHBoxLayout()
+main_layout.addWidget(text_box)
+main_layout.addLayout(button_layout)
+
+window.setLayout(main_layout)
+window.show()
+
+sys.exit(app.exec_())
