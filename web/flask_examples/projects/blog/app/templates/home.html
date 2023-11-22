@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Recent Posts</h2>
+<ul>
+    {% for post in posts %}
+        <li><a href="{{ url_for('post', post_id=loop.index) }}">{{ post.title }}</a> by {{ post.author }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
