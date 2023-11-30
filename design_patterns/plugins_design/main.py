@@ -17,6 +17,8 @@ class PluginManager:
                     module = importlib.import_module(f"{self.plugin_directory}.{module_name}")
                     for obj_name in dir(module):
                         obj = getattr(module, obj_name)
+                        # read_type = getattr(obj, 'read_type', None)
+                        # hasattr(obj, 'read_type')
                         if isinstance(obj, type) and obj.read_type:
                             print(obj)
                             self.plugins[obj.read_type] = obj
