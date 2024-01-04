@@ -19,6 +19,12 @@ CREATE TABLE Teachers (
     Subject TEXT
 );
 
+CREATE TABLE Subjects (
+    SubjectID INTEGER PRIMARY KEY,
+    Name TEXT,
+    Subject TEXT
+);
+
 CREATE TABLE Courses (
     CourseID INTEGER PRIMARY KEY,
     Name TEXT,
