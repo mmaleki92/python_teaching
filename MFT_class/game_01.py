@@ -38,11 +38,16 @@ while game:
     
     x = x + x_change
     y = y + y_change
+
     if x>400:
         x = 0
-    
+    elif x<0:
+        x = 400
     if y>300:
         y = 0
+    elif y<0:
+        y = 300
+
     dis.fill(BLACK)
 
 
