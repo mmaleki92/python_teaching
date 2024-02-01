@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 
 pygame.init()
 
@@ -14,8 +15,17 @@ x, y = 10, 10
 
 x_g, y_g = 400 - 10, 300 - 10
 
+ghost = pygame.image.load('image.png')
+
+ghost = pygame.transform.scale(ghost, [50, 100])
 x_change, y_change = 0, 0
 size_x, size_y = 50, 50
+
+
+player_rect = Rect(x, y, 50, 50)
+player_rect2 = Rect(x_g, y_g, 50, 50)
+
+
 while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,8 +55,24 @@ while game:
     x = x + x_change
     y = y + y_change
 
-    x_g = x_g - x_change
-    y_g = y_g - y_change
+    if x_g - x>0:
+        x_g = x_g - 1
+    else:
+        x_g = x_g + 1
+    
+    if y_g - y > 0:
+        y_g = y_g - 1
+    else:
+        y_g = y_g + 1
+    
+    player_rect = Rect(x, y, 50, 50)
+    player_rect2 = Rect(x_g, y_g, 50, 50)
+
+    #x_g = x_g + x_change*5
+    #y_g = y_g + y_change*5
+    collide = pygame.Rect.colliderect(player_rect, 
+                                    player_rect2)
+    print(collide)
     
     if x>400:
         x = 0
@@ -75,8 +101,9 @@ while game:
     dis.fill(BLACK)
 
     pygame.draw.rect(dis, RED, [x, y, size_x, size_y])
-    pygame.draw.rect(dis, G_color, [x_g, y_g, 50, 50])
-
+   # pygame.draw.rect(dis, G_color, [x_g, y_g, 50, 50])
+    
+    dis.blit(ghost, [x_g, y_g])
 
     pygame.display.update()
 
