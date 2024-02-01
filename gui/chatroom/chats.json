@@ -1,0 +1,7 @@
+{
+  "messages": [
+    {"sender": "John", "text": "Hello, how are you?", "time": "10:00 AM"},
+    {"sender": "Doe", "text": "I'm good, thanks! And you?", "time": "10:01 AM"}
+  ]
+}
+
