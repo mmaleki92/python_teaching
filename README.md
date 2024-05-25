@@ -8,4 +8,4 @@ https://docs.google.com/forms/d/e/1FAIpQLSfxLvr99ZBU-mChzExefqPhXFzxCDNxyRMh3JWv
 
 # games:
 
-[https://github.com/mmaleki92/python_teaching](https://github.com/mmaleki92/games)
+https://github.com/mmaleki92/games
