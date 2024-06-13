@@ -16,3 +16,11 @@ def create_user(user):
     cur.close()
     con.close()
 
+def username_exists(username):
+    con = connect_db()
+    cur = con.cursor()
+
+    cur.execute("""SELECT * FROM users WHERE username=?""", (username))
+    rows = cur.fetchall()
+
+    return rows >= 1
