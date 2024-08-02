@@ -1,23 +1,31 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QLineEdit, QPushButton, QMainWindow
+from PyQt6.QtWidgets import QApplication, QWidget, QLineEdit, QPushButton, QMainWindow, QFormLayout
 
 
 
-class LibWindow(QMainWindow):
-    def __init__(self) -> None:
-        super().__init__()
+class LibWindow(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-        self.title_edit = QLineEdit(parent=self)
+        self.setWindowTitle('سامانه')
 
-        self.author_edit = QLineEdit(parent=self)
-        self.author_edit.move(0, 50)
+    
+        layout = QFormLayout()
+        self.setLayout(layout)
 
-        self.publisher_edit = QLineEdit(parent=self)
-        self.publisher_edit.move(0, 100)
+        self.title_edit = QLineEdit()
+        layout.addRow('Title:', self.title_edit)
 
+        self.author_edit = QLineEdit()
+        layout.addRow('Author:', self.author_edit)
 
-        self.add_book_btn = QPushButton("افزودن", parent=self)
-        self.add_book_btn.move(200, 100)
+        self.publisher_edit = QLineEdit()
 
+        layout.addRow('Publisher:', self.publisher_edit)
 
+        self.add_book_btn = QPushButton("افزودن")
+
+        layout.addRow('', self.add_book_btn)
+
+        self.show()
 
