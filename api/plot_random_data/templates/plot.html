@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plotting Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        // Initialize chart and data variables
+        let chart;
+        let labels = [];
+        let dataPoints = [];
+
+        async function fetchData() {
+            const response = await fetch('/data'); // This is a relative URL, meaning it is relative to the domain from which the HTML page was loaded.
+            const data = await response.json();
+            return data;
+        }
+
+        function updateChart(newData) {
+            // Update labels and data arrays
+            labels.push(`Point ${labels.length + 1}`); // like the append method in the list
+            dataPoints.push(...newData); // ... like the extend in the list methods
+
+            // Limit the chart to display the last 10 points
+            if (labels.length > 10) {
+                labels.shift(); // like the pop(0) in the list method
+                dataPoints.shift();
+            }
+
+            // Update chart with new data
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = dataPoints;
+            chart.update();
+        }
+
+        async function initializeChart() {
+            // Fetch initial data
+            const initialData = await fetchData();
+            labels = initialData.map((_, index) => `Point ${index + 1}`);
+            dataPoints = initialData;
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Random Data',
+                        data: dataPoints,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function startFetchingData() {
+            // Fetch and update the chart every 2 seconds
+            setInterval(async () => {
+                const newData = await fetchData();
+                updateChart(newData);
+            }, 2000); // Adjust the interval as needed
+        }
+
+        // Initialize the chart and start fetching data
+        initializeChart();
+        startFetchingData();
+    </script>
+</body>
+</html>
