@@ -192,3 +192,32 @@ sorted_array = merge_sort([1, 2, 3, 4, 5, 6, 76, 345, 0, 3, 45, 4, 3, 2])
 
 print(sorted_array)
 ```
+
+- `merge()` has a linear runtime. It receives two arrays whose combined length is at most n (the length of the original input array), and it combines both arrays by looking at each element at most once. This leads to a runtime complexity of O(n).
+- The second step splits the input array recursively and calls `merge()` for each half. Since the array is halved until a single element remains, the total number of halving operations performed by this function is log2n. Since `merge()` is called for each half, we get a total runtime of $O(n log2n)$.
+  
+Interestingly, $O(n log2n)$ is the best possible worst-case runtime that can be achieved by a sorting algorithm.
+
+## Quicksort Algorithm
+![image](https://github.com/user-attachments/assets/57c8a8df-fdd1-4d86-ab2b-aec85eb4db1f)
+
+```python
+from random import choice
+
+
+
+def quicksort(array):
+    if len(array) < 2:
+        return array
+
+    pivot = choice(array)  # Randomly choose pivot
+    low = [item for item in array if item < pivot]
+    same = [item for item in array if item == pivot]
+    high = [item for item in array if item > pivot]
+
+    return quicksort(low) + same + quicksort(high)
+```
+
+- Best and average case: $O(𝑛 log 𝑛)$ – This happens when the pivot splits the array into roughly equal parts.
+- Worst case: $O(𝑛^2)$ – This occurs if the pivot is always the smallest or largest element, leading to highly unbalanced partitions.
+
