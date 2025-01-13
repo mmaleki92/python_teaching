@@ -122,6 +122,28 @@ $\frac{n^2}{2} -\frac{n}{2}$
 
 it's about the growth wrt to the input size, so we would omit the 2s, and we would have $n^2 - n$, and because $n^2$ is bigger we would go with it.
 
+# The Insertion Sort Algorithm
+
+
+```python
+def insertion_sort(array):
+    for i in range(1, len(array)):
+        key = array[i]
+        j = i - 1
+        while j >= 0 and array[j] > key:
+            array[j + 1] = array[j]
+            j -= 1
+        array[j + 1] = key
+    return array
+
+# Example usage
+array = [8, 4, 6, 1]
+sorted_array = insertion_sort(array)
+print("Sorted Array:", sorted_array)
+```
 - best case "O(n)" : for sorted array
+
 - worst case: $O(n^2)$
+
+![Insertion-sort-example](https://github.com/user-attachments/assets/07295492-6ba3-4fd8-8445-4fd25bc3e6fa)
 
