@@ -146,4 +146,49 @@ print("Sorted Array:", sorted_array)
 - worst case: $O(n^2)$
 
 ![Insertion-sort-example](https://github.com/user-attachments/assets/07295492-6ba3-4fd8-8445-4fd25bc3e6fa)
+[wikipedia]
 
+![image](https://github.com/user-attachments/assets/1c630226-a870-44d8-80d5-0585c21c3bf0)
+[realpython]
+
+- time complexity : $O(n^2)$
+
+- worst case: reversed array $O(n^2)$
+- best case: sorted $O(n)$
+
+## Merge Sort Algorithm
+divide-and-conquer approach
+![image](https://github.com/user-attachments/assets/c9babbc4-6dfb-44d7-b916-b7bcdffa040a)
+
+```python
+def merge(left, right):
+    result = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+
+def merge_sort(array):
+    if len(array) < 2:
+        return array
+
+    mid = len(array) // 2
+    left = merge_sort(array[:mid])
+    right = merge_sort(array[mid:])
+    return merge(left, right)
+
+
+sorted_array = merge_sort([1, 2, 3, 4, 5, 6, 76, 345, 0, 3, 45, 4, 3, 2])
+
+print(sorted_array)
+```
