@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Charts with Flask & Plotly</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Data Visualization</h1>
+        </header>
+        
+        <main>
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h2>Stock Price Trend</h2>
+                    <div id="stock-chart" class="chart"></div>
+                    <div class="chart-controls">
+                        <button id="zoom-in">Zoom In</button>
+                        <button id="zoom-out">Zoom Out</button>
+                        <button id="reset-view">Reset View</button>
+                    </div>
+                </div>
+                
+                <div class="chart-row">
+                    <div class="chart-card half">
+                        <h2>Distribution Histogram</h2>
+                        <div id="histogram-chart" class="chart"></div>
+                    </div>
+                    
+                    <div class="chart-card half">
+                        <h2>Category Distribution</h2>
+                        <div id="pie-chart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Interactive Chart Example</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='chart.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-title">
+                <h1>Sales Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <select id="time-range">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                </select>
+                <button id="refresh-btn">Refresh Data</button>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <!-- Key Metrics -->
+            <section class="metrics-section">
+                <div class="metric-card" id="total-sales">
+                    <h3>Total Sales</h3>
+                    <div class="metric-value">$0</div>
+                    <div class="metric-change positive">+0% from previous period</div>
+                </div>
+                
+                <div class="metric-card" id="total-units">
+                    <h3>Units Sold</h3>
+                    <div class="metric-value">0</div>
+                    <div class="metric-change positive">+0% from previous period</div>
+                </div>
+                
+                <div class="metric-card" id="avg-order">
+                    <h3>Avg. Order Value</h3>
+                    <div class="metric-value">$0</div>
+                    <div class="metric-change negative">+0% from previous period</div>
+                </div>
+                
+                <div class="metric-card" id="conversion">
+                    <h3>Conversion Rate</h3>
+                    <div class="metric-value">0%</div>
+                    <div class="metric-change positive">+0% from previous period</div>
+                </div>
+            </section>
+            
+            <!-- Charts -->
+            <section class="charts-section">
+                <div class="chart-card full-width">
+                    <h3>Sales Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="trend-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card half-width">
+                    <h3>Sales by Product</h3>
+                    <div class="chart-container">
+                        <div id="product-chart"></div>
+                    </div>
+                </div>
+                
+                <div class="chart-card half-width">
+                    <h3>Regional Performance</h3>
+                    <div class="chart-container">
+                        <div id="region-chart"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Data Table -->
+            <section class="table-section">
+                <div class="table-card">
+                    <h3>Product Performance</h3>
+                    <div class="table-actions">
+                        <input type="text" id="table-search" placeholder="Search products...">
+                        <select id="table-sort">
+                            <option value="sales-desc">Sales (High to Low)</option>
+                            <option value="sales-asc">Sales (Low to High)</option>
+                            <option value="units-desc">Units (High to Low)</option>
+                            <option value="units-asc">Units (Low to High)</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table id="product-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Sales</th>
+                                    <th>Units</th>
+                                    <th>Avg. Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="dashboard-footer">
+            <p>&copy; 2025 Sales Dashboard | Last updated: <span id="update-time"></span></p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Welcome, {{ user.name }}!</h2>
+    <div class="dashboard-content">
+        <div class="card">
+            <h3>Your Account</h3>
+            <p>Username: {{ session.user_id }}</p>
+            <p>You're successfully logged in!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

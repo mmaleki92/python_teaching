@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}Home - Flask Blog{% endblock %}
+
+{% block content %}
+<section class="posts-list">
+    <div class="section-header">
+        <h2>Recent Posts</h2>
+    </div>
+    
+    {% for post in posts %}
+        <article class="post-card">
+            <div class="post-meta">
+                <span class="post-date">{{ post.created_at|formatdate }}</span>
+                <span class="post-author">by {{ post.name }}</span>
+            </div>
+            
+            <h
