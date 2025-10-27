@@ -1,10 +1,19 @@
-# python_teaching
+# Python Teaching Materials
 
-Slides and codes for Python course, from basics to advanced.
+This is a repository for material of teaching Python, Adanced Python, and multiple other libraries adn packages. The material contain codes, slides and small projects. The matrial is beaing used for my previous 100+ courses I had in the different years.
+
+Othe courses I teach are:
+
+- Machine Learing + Deep Learning
+- Computer Vision
+- Data Analysis
+
+
 Most of the slides are in Persian.
 
-https://docs.google.com/forms/d/e/1FAIpQLSfxLvr99ZBU-mChzExefqPhXFzxCDNxyRMh3JWv9zLfo_dGhQ/viewform?usp=sf_link
 
+
+Other Repositories that I am using in my python teaching:
 
 ## games:
 
