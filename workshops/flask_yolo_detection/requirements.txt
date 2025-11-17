@@ -8,10 +8,10 @@ ultralytics==8.0.228
 opencv-python==4.8.1.78
 
 # Image Processing
-Pillow==10.1.0
+Pillow==10.2.0
 
 # Numerical Operations
 numpy==1.26.2
 
 # HTTP utilities (for secure filename handling)
-Werkzeug==3.0.1
+Werkzeug==3.0.3

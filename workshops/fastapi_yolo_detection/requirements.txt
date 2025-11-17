@@ -1,11 +1,11 @@
 # FastAPI Framework
-fastapi==0.104.1
+fastapi==0.109.1
 
 # ASGI Server
 uvicorn[standard]==0.24.0
 
 # File Upload Support
-python-multipart==0.0.6
+python-multipart==0.0.18
 
 # YOLO Object Detection
 ultralytics==8.0.228
@@ -14,7 +14,7 @@ ultralytics==8.0.228
 opencv-python==4.8.1.78
 
 # Image Processing
-Pillow==10.1.0
+Pillow==10.2.0
 
 # Numerical Operations
 numpy==1.26.2
