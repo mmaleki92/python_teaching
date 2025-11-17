@@ -202,5 +202,11 @@ def result_file(filename):
 
 if __name__ == '__main__':
     # Run the Flask application
-    # Debug mode is enabled for development - disable in production!
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Debug mode is enabled for development/workshop purposes only
+    # WARNING: Never use debug=True in production environments!
+    # For production, use a production WSGI server like Gunicorn or uWSGI
+    # Example: gunicorn -w 4 -b 0.0.0.0:5000 app:app
+    
+    # Use environment variable to control debug mode (defaults to True for workshop)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    app.run(debug=debug_mode, host='0.0.0.0', port=5000)

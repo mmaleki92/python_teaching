@@ -176,6 +176,17 @@ You can modify the following settings in `app.py`:
 
 - **Server Port**: Change `port=5000` in the last line
 
+- **Debug Mode**: For production deployment, disable debug mode:
+  ```bash
+  export FLASK_DEBUG=False
+  python app.py
+  ```
+  Or use a production WSGI server like Gunicorn:
+  ```bash
+  pip install gunicorn
+  gunicorn -w 4 -b 0.0.0.0:5000 app:app
+  ```
+
 ## 🐛 Troubleshooting
 
 ### Common Issues
@@ -239,6 +250,19 @@ To enhance this project, you could:
 5. Deploy to a cloud platform (Heroku, AWS, etc.)
 6. Add custom object detection for specific use cases
 7. Implement object tracking across video frames
+
+## 🔒 Security Considerations
+
+This workshop is designed for **learning and development purposes**. For production deployment:
+
+1. **Debug Mode**: Always set `FLASK_DEBUG=False` or use a production WSGI server (Gunicorn, uWSGI)
+2. **File Validation**: Current implementation validates file extensions - consider adding file content validation
+3. **Rate Limiting**: Implement rate limiting to prevent abuse (e.g., using Flask-Limiter)
+4. **File Size**: Already implemented (16MB limit) but adjust based on your needs
+5. **HTTPS**: Use TLS/SSL certificates in production
+6. **Authentication**: Consider adding user authentication for production use
+7. **Input Sanitization**: File names are sanitized using `secure_filename()`
+8. **Temporary Files**: Consider implementing cleanup of old uploaded files
 
 ## 📝 Notes for Instructors
 
