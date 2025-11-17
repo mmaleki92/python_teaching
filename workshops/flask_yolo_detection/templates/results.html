@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Results - YOLO Flask Workshop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .images-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .image-card {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .image-card img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .detections-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .detections-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .detection-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .detection-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .detection-item {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .detection-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .detection-class {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .detection-confidence {
+            color: #667eea;
+            font-size: 1em;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+        
+        .no-detections {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 1.2em;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Detection Complete!</h1>
+        <p class="subtitle">Here are the results of the object detection</p>
+        
+        <div class="images-container">
+            <div class="image-card">
+                <h2>📤 Original Image</h2>
+                <img src="{{ url_for('uploaded_file', filename=original_image) }}" alt="Original Image">
+            </div>
+            
+            <div class="image-card">
+                <h2>🎯 Detected Objects</h2>
+                <img src="{{ url_for('result_file', filename=detected_image) }}" alt="Detected Image">
+            </div>
+        </div>
+        
+        <div class="detections-section">
+            <h2>📊 Detection Statistics</h2>
+            
+            <div class="detection-stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ detections|length }}</div>
+                    <div class="stat-label">Objects Detected</div>
+                </div>
+                
+                {% if detections %}
+                <div class="stat-card">
+                    <div class="stat-number">{{ (detections | map(attribute='confidence') | sum / detections|length * 100) | round(1) }}%</div>
+                    <div class="stat-label">Avg. Confidence</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">{{ detections | map(attribute='class') | unique | list | length }}</div>
+                    <div class="stat-label">Unique Classes</div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if detections %}
+            <h3 style="color: #667eea; margin-top: 20px; margin-bottom: 15px;">Detected Objects:</h3>
+            <div class="detection-list">
+                {% for detection in detections %}
+                <div class="detection-item">
+                    <div class="detection-class">{{ detection.class|title }}</div>
+                    <div class="detection-confidence">
+                        Confidence: {{ (detection.confidence * 100)|round(1) }}%
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: {{ (detection.confidence * 100)|round(1) }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-detections">
+                😕 No objects detected in the image.
+                <br>
+                Try uploading a different image with more visible objects.
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="actions">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                🔄 Detect Another Image
+            </a>
+            <a href="{{ url_for('result_file', filename=detected_image) }}" download class="btn btn-secondary">
+                💾 Download Result
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Animate confidence bars on load
+        window.addEventListener('load', function() {
+            const bars = document.querySelectorAll('.confidence-fill');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

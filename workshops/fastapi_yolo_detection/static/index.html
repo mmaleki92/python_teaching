@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI YOLO Object Detection</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 FastAPI + YOLO Object Detection</h1>
+            <p class="subtitle">Upload an image to detect objects using YOLOv8 with FastAPI</p>
+        </header>
+        
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <div class="upload-card">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Click to select an image or drag & drop</div>
+                    <div class="upload-hint">Supported formats: JPG, JPEG, PNG (Max 16MB)</div>
+                    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png" hidden>
+                    <div class="file-name" id="fileName"></div>
+                </div>
+                
+                <button class="btn btn-primary" id="detectBtn" disabled>
+                    🔍 Detect Objects
+                </button>
+                
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+        </section>
+        
+        <!-- Loading Section -->
+        <section class="loading-section" id="loadingSection" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Processing image... Please wait</p>
+        </section>
+        
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h2>✅ Detection Complete!</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalObjects">0</div>
+                    <div class="stat-label">Objects Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgConfidence">0%</div>
+                    <div class="stat-label">Avg. Confidence</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="uniqueClasses">0</div>
+                    <div class="stat-label">Unique Classes</div>
+                </div>
+            </div>
+            
+            <div class="images-container">
+                <div class="image-card">
+                    <h3>📤 Original Image</h3>
+                    <img id="originalImage" src="" alt="Original">
+                </div>
+                <div class="image-card">
+                    <h3>🎯 Detected Objects</h3>
+                    <img id="detectedImage" src="" alt="Detected">
+                </div>
+            </div>
+            
+            <div class="detections-container">
+                <h3>📊 Detected Objects</h3>
+                <div id="detectionsList" class="detections-list"></div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="resetApp()">
+                    🔄 Detect Another Image
+                </button>
+                <button class="btn btn-secondary" id="downloadBtn">
+                    💾 Download Result
+                </button>
+            </div>
+        </section>
+        
+        <!-- API Info Section -->
+        <section class="info-section">
+            <h3>ℹ️ About this API</h3>
+            <div class="info-card">
+                <p><strong>Model:</strong> YOLOv8 (You Only Look Once)</p>
+                <p><strong>Framework:</strong> FastAPI with async/await</p>
+                <p><strong>Features:</strong> Real-time object detection, 80 object classes</p>
+                <p><strong>API Documentation:</strong> <a href="/docs" target="_blank">Swagger UI</a> | <a href="/redoc" target="_blank">ReDoc</a></p>
+            </div>
+            
+            <h3>🔗 API Endpoints</h3>
+            <div class="endpoints-list">
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="path">/api/detect</span>
+                    <span class="desc">Upload image and detect objects</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/api/health</span>
+                    <span class="desc">Check API health status</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/api/supported-objects</span>
+                    <span class="desc">Get list of detectable objects</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="path">/images/results/{filename}</span>
+                    <span class="desc">Retrieve processed image</span>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Global variables
+        let selectedFile = null;
+        let currentResultUrl = null;
+        
+        // Get DOM elements
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileName = document.getElementById('fileName');
+        const detectBtn = document.getElementById('detectBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const uploadSection = document.getElementById('uploadSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+        
+        // File input change handler
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                handleFileSelect(this.files[0]);
+            }
+        });
+        
+        // Click to open file dialog
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+        
+        // Handle file selection
+        function handleFileSelect(file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showError('Invalid file type. Please upload JPG, JPEG, or PNG images.');
+                return;
+            }
+            
+            // Validate file size (16MB)
+            const maxSize = 16 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showError('File too large. Maximum size is 16MB.');
+                return;
+            }
+            
+            selectedFile = file;
+            fileName.textContent = '📄 ' + file.name;
+            detectBtn.disabled = false;
+            hideError();
+        }
+        
+        // Detect button click handler
+        detectBtn.addEventListener('click', async function() {
+            if (!selectedFile) return;
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            
+            // Show loading
+            uploadSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            
+            try {
+                // Send request to API
+                const response = await fetch('/api/detect', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to process image');
+                }
+                
+                const data = await response.json();
+                
+                // Display results
+                displayResults(data);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                uploadSection.style.display = 'block';
+                loadingSection.style.display = 'none';
+                showError('Error: ' + error.message);
+            }
+        });
+        
+        // Display detection results
+        function displayResults(data) {
+            loadingSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            
+            // Update statistics
+            document.getElementById('totalObjects').textContent = data.total_objects;
+            
+            // Calculate average confidence
+            if (data.detections.length > 0) {
+                const avgConf = data.detections.reduce((sum, d) => sum + d.confidence, 0) / data.detections.length;
+                document.getElementById('avgConfidence').textContent = (avgConf * 100).toFixed(1) + '%';
+                
+                // Count unique classes
+                const uniqueClasses = new Set(data.detections.map(d => d.class));
+                document.getElementById('uniqueClasses').textContent = uniqueClasses.size;
+            } else {
+                document.getElementById('avgConfidence').textContent = '0%';
+                document.getElementById('uniqueClasses').textContent = '0';
+            }
+            
+            // Display images
+            document.getElementById('originalImage').src = data.original_url;
+            document.getElementById('detectedImage').src = data.image_url;
+            currentResultUrl = data.image_url;
+            
+            // Display detection list
+            displayDetectionsList(data.detections);
+            
+            // Setup download button
+            document.getElementById('downloadBtn').onclick = function() {
+                window.open(currentResultUrl, '_blank');
+            };
+        }
+        
+        // Display list of detections
+        function displayDetectionsList(detections) {
+            const listContainer = document.getElementById('detectionsList');
+            listContainer.innerHTML = '';
+            
+            if (detections.length === 0) {
+                listContainer.innerHTML = '<div class="no-detections">😕 No objects detected in the image.</div>';
+                return;
+            }
+            
+            detections.forEach(detection => {
+                const item = document.createElement('div');
+                item.className = 'detection-item';
+                
+                const confidence = (detection.confidence * 100).toFixed(1);
+                
+                item.innerHTML = `
+                    <div class="detection-class">${capitalizeFirst(detection.class)}</div>
+                    <div class="detection-confidence">Confidence: ${confidence}%</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: ${confidence}%"></div>
+                    </div>
+                `;
+                
+                listContainer.appendChild(item);
+            });
+            
+            // Animate confidence bars
+            setTimeout(() => {
+                document.querySelectorAll('.confidence-fill').forEach(bar => {
+                    bar.style.transition = 'width 0.5s ease';
+                });
+            }, 100);
+        }
+        
+        // Utility functions
+        function showError(message) {
+            errorMessage.textContent = '⚠️ ' + message;
+            errorMessage.style.display = 'block';
+        }
+        
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+        
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        function resetApp() {
+            selectedFile = null;
+            currentResultUrl = null;
+            fileName.textContent = '';
+            fileInput.value = '';
+            detectBtn.disabled = true;
+            uploadSection.style.display = 'block';
+            loadingSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+            hideError();
+        }
+    </script>
+</body>
+</html>
