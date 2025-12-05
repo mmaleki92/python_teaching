@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI Calculator</title>
+    <style>
+        body {
+            background-color: #87CEEB; /* بک‌گراند آبی */
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>BMI Calculator</h1>
+    <form method="get">
+        Weight (kg): <input type="number" name="weight" step="0.1" required><br><br>
+        Height (cm): <input type="number" name="height" step="0.1" required><br><br>
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if result %}
+        <p>Your BMI: {{ result }}</p>
+    {% endif %}
+</body>
+</html>
